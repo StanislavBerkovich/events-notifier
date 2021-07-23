@@ -1,5 +1,7 @@
+require './core/events/base_sourcer'
+
 module EventsSources
-  class Dummy
+  class Dummy < Core::Events::BaseSourcer
     SERVERS = ['bitstars_net', 'n1_casino', 'betamo', 's5_css'].freeze
 
     def initialize(consumer)

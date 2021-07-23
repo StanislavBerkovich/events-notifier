@@ -1,17 +1,17 @@
 require './config'
-require './storage/memory'
-require './apps/bot_processor'
+require './storages/memory'
+require './core/bot_processor'
 require './bot_clients/discord'
 require './events_sources/dummy'
 require './events_consumers/sync_bot_sender'
 
-storage = Storage::Memory.new
+storage = Storages::Memory.new
 
 bot = Thread.new do
   config = Config.new('config.yml')
   bot_client = BotClients::Discord.new(token: config.discord_bot_token)
 
-  processor = Apps::BotProcessor.new(client: bot_client, storage: storage)
+  processor = Core::BotProcessor.new(client: bot_client, storage: storage)
   processor.start
 end
 

@@ -1,8 +1,9 @@
 require 'discordrb'
-require './bot_clients/errors'
+require './core/bot_clients/errors'
+require './core/bot_clients/base'
 
 module BotClients
-  class Discord
+  class Discord < Core::BotClients::Base
     module Messages
       SUBSCRIBE_PREFIX = 'AddSub'
       UNSUBSCRIBE = 'UnSubOne'
@@ -30,7 +31,7 @@ module BotClients
         subscriptions = yield(subscription, event.channel.id)
 
         event.respond("Your subscriptions: #{subscriptions.to_json}")
-      rescue BotClients::Errors::Base => e
+      rescue Core::BotClients::Errors::Base => e
         event.respond("Error: #{e}")
       end
     end
@@ -40,7 +41,7 @@ module BotClients
         subscriptions = yield event.channel.id
 
         event.respond("Your subscriptions: #{subscriptions.to_json}")
-      rescue BotClients::Errors::Base => e
+      rescue Core::BotClients::Errors::Base => e
         event.respond("Error: #{e}")
       end
     end
@@ -51,7 +52,7 @@ module BotClients
         subscriptions = yield id, event.channel.id
 
         event.respond("Your subscriptions: #{subscriptions.to_json}")
-      rescue BotClients::Errors::Base => e
+      rescue Core::BotClients::Errors::Base => e
         event.respond("Error: #{e}")
       end
     end
@@ -61,7 +62,7 @@ module BotClients
         subscriptions = yield event.channel.id
 
         event.respond("Your subscriptions: #{subscriptions.to_json}")
-      rescue BotClients::Errors::Base => e
+      rescue Core::BotClients::Errors::Base => e
         event.respond("Error: #{e}")
       end
     end
@@ -72,7 +73,7 @@ module BotClients
     end
 
     def raise_invalid_subscription_error(message)
-      raise BotClients::Errors::InvalidSubscription, message
+      raise Core::BotClients::Errors::InvalidSubscription, message
     end
   end
 end

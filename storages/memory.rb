@@ -1,5 +1,7 @@
-module Storage
-  class Memory
+require './core/base_storage'
+
+module Storages
+  class Memory < Core::BaseStorage
     def initialize
       @subscriptions = {}
       @id_seq = 0

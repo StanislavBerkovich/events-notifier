@@ -1,4 +1,4 @@
-module Apps
+module Core
   class BotProcessor
     SUBSCRIBE_START_WITH = 'AddSub'.freeze
 
