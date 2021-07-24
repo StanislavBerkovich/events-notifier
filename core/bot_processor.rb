@@ -2,9 +2,9 @@ module Core
   class BotProcessor
     SUBSCRIBE_START_WITH = 'AddSub'.freeze
 
-    def initialize(client:, storage:)
+    def initialize(client:, subscriptions_storage:)
       @client = client
-      @storage = storage
+      @subscriptions_storage = subscriptions_storage
     end
 
     def start
@@ -13,22 +13,22 @@ module Core
           client.raise_invalid_subscription_error("Subscription must be single object")
         end
 
-        @storage.add_subscription(subscription, channel_id)
-        @storage.subscriptions(channel_id)
+        @subscriptions_storage.add_subscription(subscription, channel_id)
+        @subscriptions_storage.subscriptions(channel_id)
       end
 
       @client.handle_unsubscribe_all do |channel_id|
-        @storage.unsubscribe_all(channel_id)
-        @storage.subscriptions(channel_id)
+        @subscriptions_storage.unsubscribe_all(channel_id)
+        @subscriptions_storage.subscriptions(channel_id)
       end
 
       @client.handle_unsubscribe do |subscription_id, channel_id|
-        @storage.unsubscribe(subscription_id, channel_id)
-        @storage.subscriptions(channel_id)
+        @subscriptions_storage.unsubscribe(subscription_id, channel_id)
+        @subscriptions_storage.subscriptions(channel_id)
       end
 
       @client.handle_subscriptions do |channel_id|
-        @storage.subscriptions(channel_id)
+        @subscriptions_storage.subscriptions(channel_id)
       end
 
       @client.start
