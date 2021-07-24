@@ -1,11 +1,11 @@
 require './config'
-require './storages/memory'
+require './subscriptions_storages/memory'
 require './core/bot_processor'
 require './bot_clients/discord'
 require './events_sources/dummy'
 require './events_consumers/sync_bot_sender'
 
-storage = Storages::Memory.new
+storage = SubscriptionsStorages::Memory.new
 
 bot = Thread.new do
   config = Config.new('config.yml')
