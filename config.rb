@@ -8,4 +8,8 @@ class Config
   def discord_bot_token
     @config['discord_bot_token']
   end
+
+  def servers
+    @config['servers'].split(',').map { |s| s.strip }
+  end
 end

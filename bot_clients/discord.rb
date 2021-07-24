@@ -1,7 +1,5 @@
 require 'discordrb'
 
-require 'pry'
-
 module BotClients
   class Discord
     module Messages

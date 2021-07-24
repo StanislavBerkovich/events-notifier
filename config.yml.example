@@ -1,1 +1,2 @@
 discord_bot_token: 'DISCORD_TOKEN'
+servers: "test1, test2, test3"

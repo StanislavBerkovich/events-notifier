@@ -1,14 +1,32 @@
 module EventsConsumers
   class SyncBotSender
-    def initialize(subscriptions_service:, bot_client:)
+    def initialize(subscriptions_service:, events_service:, bot_client:, wait_time: 5)
       @subscriptions_service = subscriptions_service
+      @events_service = events_service
       @bot_client = bot_client
+      @wait_time = wait_time
     end
 
-    def consume(event)
-      channel_ids = @subscriptions_service.channels_subscribed_for(event)
-      channel_ids.each do |ch_id|
-        @bot_client.send_message(ch_id, "You subscribed: #{event.to_json}")
+    def consume
+      while true
+        was_events = false
+        @events_service.process_events_batch do |events|
+          was_events ||= events.size != 0
+
+          events.each do |event|
+            channel_ids = @subscriptions_service.channels_subscribed_for(event)
+
+            channel_ids.each do |ch_id|
+              @bot_client.send_message(ch_id, "You subscribed: #{event.to_json}")
+            end
+          end
+
+          true
+        end
+        unless was_events
+          puts 'No events. Consumer sleeps'
+          sleep(@wait_time)
+        end
       end
     end
   end
