@@ -28,6 +28,7 @@ module BotClients
           raise_invalid_subscription_error("Subscription is invalid JSON")
         end
 
+        # TODO: store event.user
         subscriptions = yield(subscription, event.channel.id)
 
         event.respond("Your subscriptions: #{subscriptions.to_json}")

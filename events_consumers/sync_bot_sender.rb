@@ -1,7 +1,5 @@
-require './core/events/base_consumer'
-
 module EventsConsumers
-  class SyncBotSender < Core::Events::BaseConsumer
+  class SyncBotSender
     def initialize(storage:, bot_client:)
       @storage = storage
       @bot_client = bot_client
