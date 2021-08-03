@@ -12,4 +12,8 @@ class Config
   def servers
     @config['servers'].split(',').map { |s| s.strip }
   end
+
+  def mongo_url
+    @config['mongo_url']
+  end
 end

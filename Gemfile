@@ -8,3 +8,4 @@ ruby '~> 3.0.2'
 
 gem 'discordrb', require: false
 gem 'pry', group: :development
+gem "mongo", "~> 2"
