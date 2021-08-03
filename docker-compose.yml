@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  _app_base:
+    build: .
+    image: events_notifier
+
+  _app_core: &app_core
+    image: events_notifier:latest
+    environment:
+      - BUNDLE_PATH=/app_bundle
+      - BUNDLE_JOBS=8
+    volumes:
+      - .:/app:delegated
+      - app_bundle:/app_bundle:delegated
+    tty: true
+    stdin_open: true
+
+  bot:
+    <<: *app_core
+    command: ruby bin/bot.rb
+
+  producer:
+    <<: *app_core
+    command: ruby bin/producer.rb
+
+  consumer:
+    <<: *app_core
+    command: ruby bin/consumer.rb
+
+volumes:
+  app_bundle:
+
