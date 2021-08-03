@@ -25,11 +25,15 @@ GEM
     mongo (2.15.0)
       bson (>= 4.8.2, < 5.0.0)
     netrc (0.11.0)
+    nio4r (2.5.8)
     opus-ruby (1.0.1)
       ffi
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    puma (5.4.0)
+      nio4r (~> 2.0)
+    rack (2.2.3)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -45,11 +49,14 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   discordrb
   mongo (~> 2)
   pry
+  puma
+  rack
 
 RUBY VERSION
    ruby 3.0.2p107

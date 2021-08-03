@@ -7,11 +7,9 @@ services:
   _app_core: &app_core
     image: events_notifier:latest
     environment:
-      - BUNDLE_PATH=/app_bundle
       - BUNDLE_JOBS=8
     volumes:
       - .:/app:delegated
-      - app_bundle:/app_bundle:delegated
     tty: true
     stdin_open: true
 
@@ -27,6 +25,8 @@ services:
     <<: *app_core
     command: ruby bin/consumer.rb
 
-volumes:
-  app_bundle:
-
+  http_app:
+    <<: *app_core
+    command: bundle exec puma
+    ports:
+      - 9292:9292
