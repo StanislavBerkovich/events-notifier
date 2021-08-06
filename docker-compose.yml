@@ -17,9 +17,9 @@ services:
     <<: *app_core
     command: ruby bin/bot.rb
 
-  producer:
-    <<: *app_core
-    command: ruby bin/producer.rb
+  # producer:
+  #   <<: *app_core
+  #   command: ruby bin/producer.rb
 
   consumer:
     <<: *app_core
