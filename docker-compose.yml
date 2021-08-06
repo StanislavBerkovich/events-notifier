@@ -29,4 +29,4 @@ services:
     <<: *app_core
     command: bundle exec puma -t 0:16 -w 3
     ports:
-      - 9292:9292
+      - 8080:9292

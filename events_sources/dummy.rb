@@ -18,7 +18,7 @@ module EventsSources
     private
 
     def take_next
-      { 'server' => @servers.shuffle.first, 'message' => SecureRandom.uuid }
+      { 'server' => @servers.shuffle.first, 'text' => SecureRandom.uuid }
     end
   end
 end

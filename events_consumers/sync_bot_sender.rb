@@ -15,9 +15,10 @@ module EventsConsumers
 
           events.each do |event|
             channel_ids = @subscriptions_service.channels_subscribed_for(event)
+            message = event['text'].nil? ? "Event: #{event.to_json}" : event['text'].to_s
 
             channel_ids.each do |ch_id|
-              @bot_client.send_message(ch_id, "You subscribed: #{event.to_json}")
+              @bot_client.send_message(ch_id, message)
             end
           end
 
