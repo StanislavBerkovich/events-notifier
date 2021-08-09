@@ -46,7 +46,7 @@ module BotClients
           JSON.parse(subscription_json)
         rescue JSON::ParserError
           event.respond("Error: Subscription is invalid JSON")
-          break
+          return
         end
 
         subscriptions_service.subscribe(subscription, event.channel.id)
