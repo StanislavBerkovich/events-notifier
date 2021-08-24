@@ -30,7 +30,7 @@ class HttpApp
   private
 
   def process_sentry_event(event)
-    message = ":warning: #{event['message']}\n#{event['url']}"
+    message = ":warning: #{event.dig('event', 'title')}\n#{event['url']}"
     { text: message, server: 'sentry' }
   end
 end
