@@ -18,9 +18,20 @@ class HttpApp
       event = JSON.parse(req.body.read)
       @events_service.save(event)
       [201, {}, ['Created']]
+    elsif req.request_method == 'POST' && req.path == '/sentry_events'
+      event = JSON.parse(req.body.read)
+      @events_service.save(process_sentry_event(event))
+      [201, {}, ['Created']]
     else
       [404, {}, ['Not found']]
     end
+  end
+
+  private
+
+  def process_sentry_event(event)
+    message = ":warning: #{event['message']}\n#{event['url']}"
+    { text: message, server: 'sentry' }
   end
 end
 
