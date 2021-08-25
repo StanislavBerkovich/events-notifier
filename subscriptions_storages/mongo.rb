@@ -16,7 +16,7 @@ module SubscriptionsStorages
     end
 
     def subscriptions(channel_id)
-      data = @collection.find({ channel_id: channel_id.to_s }, projection: { _id: 1, servers: 1, events: 1 })
+      data = @collection.find({ channel_id: channel_id.to_s })
       data.to_a.to_json
     end
 
