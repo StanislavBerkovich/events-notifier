@@ -2,6 +2,8 @@ require './core/subscriptions/base_storage'
 
 module SubscriptionsStorages
   class Mongo < Core::Subscriptions::BaseStorage
+    BASE_OR_SELECTORS = { servers: 'server', types: 'type', teams: 'team' }
+
     def initialize(storage_collection)
       @subscriptions = {}
       @id_seq = 0
@@ -15,7 +17,7 @@ module SubscriptionsStorages
 
     def subscriptions(channel_id)
       data = @collection.find({ channel_id: channel_id.to_s }, projection: { _id: 1, servers: 1, events: 1 })
-      data.map { |i| { id: i['_id'].to_s, servers: i['servers'], events: i['events'] } }.to_json
+      data.to_a.to_json
     end
 
     def unsubscribe_all(channel_id)
@@ -27,7 +29,18 @@ module SubscriptionsStorages
     end
 
     def channels_subscribed_for(event)
-      @collection.find({ servers: event['server'] }, projection: { channel_id: 1, _id: 0}).flat_map(&:values)
+      and_query = BASE_OR_SELECTORS.map { |k, v| or_selector(k, event[v]) if event[v] }.compact
+      if event['subjects'].is_a?(Array)
+        and_query += [{ '$or': [{ subjects: { '$exists': false } }, { subjects: { '$in': event['subjects'] } }]}]
+      end
+      @collection.find({ '$and': and_query } ,
+                       projection: { channel_id: 1, _id: 0}).flat_map(&:values)
+    end
+
+    private
+
+    def or_selector(field, value)
+      { '$or': [{field => value}, {field => { '$exists': false} }] }
     end
   end
 end
