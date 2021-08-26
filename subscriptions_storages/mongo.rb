@@ -5,8 +5,6 @@ module SubscriptionsStorages
     BASE_OR_SELECTORS = { servers: 'server', types: 'type', teams: 'team' }
 
     def initialize(storage_collection)
-      @subscriptions = {}
-      @id_seq = 0
       @collection = storage_collection
     end
 

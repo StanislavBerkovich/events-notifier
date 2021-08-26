@@ -8,6 +8,7 @@ module BotClients
       UNSUBSCRIBE_ALL = 'UnSubAll'
       LIST = 'SubList'
       HELP = 'help'
+      MY_EMAIL = 'MyEmail'
     end
 
     HELP_MESSAGE = <<~MESSAGE.freeze
@@ -16,10 +17,12 @@ module BotClients
       **#{Messages::UNSUBSCRIBE} <SubscriptionID>** - Unubscribe one channel
       **#{Messages::UNSUBSCRIBE_ALL}** - Unubscribe all channels
       **#{Messages::LIST}** - Subscriptions list
+      **#{Messages::MY_EMAIL} <email>** - save yourself for mention
     MESSAGE
 
-    def initialize(token:)
+    def initialize(token:, users_service:)
       @client = Discordrb::Bot.new(token: token)
+      @users_service = users_service
     end
 
     def start_listener(subscriptions_service)
@@ -27,14 +30,20 @@ module BotClients
       handle_unsubscribe_all(subscriptions_service)
       handle_unsubscribe(subscriptions_service)
       handle_subscriptions(subscriptions_service)
+      handle_my_email(@users_service)
       handle_help
 
       @client.run
     end
 
-    def send_message(channel_id, text)
+    def send_message(channel_id, text, emails_mention: [])
+      mentions = emails_mention.map do |email|
+        record = @users_service.get(chat: 'discord', email: email).first
+        record ? mention(record['user_id']) : email
+      end
+
       channel = @client.channel(channel_id)
-      @client.send_message(channel, text)
+      @client.send_message(channel, "#{[*mentions, text].join(' ')}")
     end
 
     private
@@ -62,6 +71,19 @@ module BotClients
         event.respond(HELP_MESSAGE)
       rescue subscriptions_service.class::BaseError => e
         event.respond("Error: #{e}")
+      end
+    end
+
+    def handle_my_email(users_service)
+      @client.message(start_with: Messages::MY_EMAIL) do |event|
+        email = event.message.to_s.delete_prefix(Messages::MY_EMAIL).strip
+        users_service.add(chat: 'discord', user_id: event.user.id.to_s, channel_id: event.channel.id.to_s,
+                          email: email, name: event.user.name)
+
+        event.respond("You is #{users_service.get(chat: 'discord', user_id: event.user.id.to_s).to_a.to_json}")
+      rescue => e
+        event.respond("Error: #{e}")
+        raise e
       end
     end
 
@@ -94,6 +116,10 @@ module BotClients
       rescue @subscriptions.class::BaseError => e
         event.respond("Error: #{e}")
       end
+    end
+
+    def mention(user_id)
+      "<@#{user_id}> "
     end
   end
 end

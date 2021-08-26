@@ -36,7 +36,7 @@ class HttpApp
 end
 
 config = Config.new('config.yml')
-mongo_client = client = Mongo::Client.new(config.mongo_url, :database => 'test')
+mongo_client = client = Mongo::Client.new(config.mongo_url)
 
 events_storage = EventsStorages::Mongo.new(mongo_client[:events])
 events_service = Core::EventsFacade.new(storage: events_storage)

@@ -17,8 +17,9 @@ module EventsConsumers
             channel_ids = @subscriptions_service.channels_subscribed_for(event)
             message = event['text'].nil? ? "Event: #{event.to_json}" : event['text'].to_s
 
+            mentions = event['subjects']&.select { |s| s.include?('@') } || []
             channel_ids.each do |ch_id|
-              @bot_client.send_message(ch_id, message)
+              @bot_client.send_message(ch_id, message, emails_mention: mentions)
             end
           end
 
