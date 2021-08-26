@@ -43,7 +43,7 @@ module BotClients
       end
 
       channel = @client.channel(channel_id)
-      @client.send_message(channel, "#{[*mentions, text].join(' ')}")
+      @client.send_message(channel, "#{[mentions.join(' '), text].join('\n')}")
     end
 
     private
