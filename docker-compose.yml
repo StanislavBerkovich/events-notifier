@@ -12,6 +12,7 @@ services:
       - .:/app:delegated
     tty: true
     stdin_open: true
+    restart: "unless-stopped"
 
   bot:
     <<: *app_core
